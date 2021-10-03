@@ -1,9 +1,19 @@
 const Category = require('../models/category');
+const { validationResult } = require('express-validator');
 
 exports.addCategory = (req, res, next) => {
-  const { name, description } = req.body;
+  const validationErrors = validationResult(req);
+  console.log(`CLOG "validationErrors": `, validationErrors);
+  if (!validationErrors.isEmpty()) {
+    const error = new Error(validationErrors.errors[0].msg);
+    error.statusCode = 422;
+    throw error;
+  }
+
+  const { slug, displayName, description } = req.body;
   const category = new Category({
-    name,
+    slug,
+    displayName,
     description,
   });
   category.save()
@@ -14,7 +24,10 @@ exports.addCategory = (req, res, next) => {
       })
     })
     .catch(err => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 }
 
@@ -29,6 +42,9 @@ exports.getCategory = (req, res, next) => {
       })
     })
     .catch(err => {
-      console.log(err);
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
 }
