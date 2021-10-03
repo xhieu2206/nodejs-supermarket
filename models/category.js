@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const categorySchema = new Schema({
+const categorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -18,7 +18,8 @@ const categorySchema = new Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
-    }
+      required: false,
+    },
   ],
   parent: {
     type: mongoose.Schema.Types.ObjectId,
