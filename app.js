@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@supermarket1.ffkqs.mongodb.net/${process.env.MONGODB_DATABASE_NAME}?retryWrites=true&w=majority`;
 
 const categoryRoutes = require('./routes/category');
+const subcategoryRoutes = require('./routes/subcategory');
 const authRoutes = require('./routes/auth');
 
 const app = express();
@@ -21,8 +22,9 @@ app.use(bodyParser.json());
  * Routes
  */
 
-app.use(categoryRoutes);
-app.use('/auth', authRoutes)
+app.use('/api', categoryRoutes);
+app.use('/api', subcategoryRoutes)
+app.use('/api/auth', authRoutes)
 
 // *********************
 

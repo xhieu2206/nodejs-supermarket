@@ -15,8 +15,8 @@ router.post('/admin/categories', [
       max: 20,
     })
     .withMessage('The length of the slug must be longer than 3 but less than 21 characters')
-    .custom((value, { req }) => {
-      return Category.findOne({ slug: value })
+    .custom((slug) => {
+      return Category.findOne({ slug })
         .then(foundedCategory => {
           if (foundedCategory) {
             return Promise.reject('This slug have been already used, please choose another slug for this new Category');
@@ -34,10 +34,12 @@ router.post('/admin/categories', [
     .trim()
     .isLength({
       min: 5,
-      max: 100,
+      max: 200,
     })
-    .withMessage('The length of the description must be equal or longer than 5 but less than 21 characters')
+    .withMessage('The length of the description must be equal or longer than 5 but less than 200 characters'),
 ], categoryController.addCategory);
+
+router.get('/categories', categoryController.getCategories);
 
 router.get('/categories/:categoryId', categoryController.getCategory)
 
