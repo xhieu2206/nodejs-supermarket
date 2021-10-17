@@ -3,10 +3,10 @@ const { validationResult } = require('express-validator');
 
 exports.addCategory = (req, res, next) => {
   const validationErrors = validationResult(req);
-  console.log(`CLOG "validationErrors": `, validationErrors);
   if (!validationErrors.isEmpty()) {
-    const error = new Error(validationErrors.errors[0].msg);
+    const error = new Error('Validation failed');
     error.statusCode = 422;
+    error.data = validationErrors.errors[0].msg
     throw error;
   }
 

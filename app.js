@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@supermarket1.ffkqs.mongodb.net/${process.env.MONGODB_DATABASE_NAME}?retryWrites=true&w=majority`;
 
 const categoryRoutes = require('./routes/category');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(bodyParser.json());
  */
 
 app.use(categoryRoutes);
+app.use('/auth', authRoutes)
 
 // *********************
 
