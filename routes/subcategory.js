@@ -21,7 +21,7 @@ router.post('/categories/:categoryId/subcategories', [
           }
         });
     })
-    .withMessage('The category doesn\'t existed, please select a existed category before adding a new sub-category'),
+    .withMessage(`The category doesn't existed, please select a existed category before adding a new sub-category`),
   body('slug')
     .trim()
     .isString()
@@ -55,5 +55,21 @@ router.post('/categories/:categoryId/subcategories', [
 ], subcategoryController.addSubcategory);
 
 router.get('/subcategories/:subcategoryId', subcategoryController.getSubcategory)
+
+router.get('/categories/:categoryId/subcategories', [
+  param('categoryId')
+    .custom(categoryId => {
+      return Category
+        .findOne({
+          _id: new mongoose.Types.ObjectId(categoryId),
+        })
+        .then(category => {
+          if (!category) {
+            return Promise.reject();
+          }
+        });
+    })
+    .withMessage(`The category doesn't existed`),
+], subcategoryController.getSubcategoriesByCategoryId);
 
 module.exports = router;

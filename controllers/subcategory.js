@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 
 const Subcategory = require('../models/subcategory');
 const Category = require('../models/category');
+const mongoose = require('mongoose');
 
 exports.addSubcategory = async (req, res, next) => {
   const validationErrors = validationResult(req);
@@ -65,5 +66,29 @@ exports.getSubcategory = async (req, res, next) => {
       error.message = 'Internal Server Error';
       next(error);
     }
+  }
+}
+
+exports.getSubcategoriesByCategoryId = async (req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    const error = new Error('Validation failed');
+    error.statusCode = 404;
+    error.data = validationErrors.array()[0].msg;
+    return next(error);
+  }
+
+  const { categoryId } = req.params;
+  try {
+    const { subcategories } = await Category.findOne({ _id: new mongoose.Types.ObjectId(categoryId) }).populate('subcategories');
+    res
+      .status(200)
+      .json({
+        message: 'Fetched Sub-categories successfully',
+        subcategories,
+      });
+  } catch (err) {
+    err.statusCode = 500;
+    next(err);
   }
 }
