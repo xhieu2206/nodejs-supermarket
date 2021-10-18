@@ -64,4 +64,6 @@ router.get('/categories/:categoryId/subcategories', [
     .withMessage(`The category doesn't existed`),
 ], subcategoryController.getSubcategoriesByCategoryId);
 
+router.put('/subcategories/:subcategoryId', subcategoryController.updateSubcategory);
+
 module.exports = router;

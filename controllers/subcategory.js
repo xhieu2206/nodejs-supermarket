@@ -90,3 +90,28 @@ exports.getSubcategoriesByCategoryId = async (req, res, next) => {
     next(err);
   }
 }
+
+exports.updateSubcategory = async (req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    const error = new Error('Validation failed');
+    error.statusCode = 404;
+    error.data = validationErrors.array()[0].msg;
+    return next(error);
+  }
+
+  const { subcategoryId } = req.params;
+  const { categoryId, displayName, description } = req.body;
+
+  try {
+    const [category, subcategory] = await Promise.all([
+      Category.findById(categoryId),
+      Subcategory.findById(subcategoryId),
+    ]);
+    console.log(`CLOG "category": `, category);
+    console.log(`CLOG "subcategory": `, subcategory);
+  } catch (err) {
+    err.statusCode = 500;
+    next(err);
+  }
+}
