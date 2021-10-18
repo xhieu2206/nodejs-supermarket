@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
-  slug: {
-    type: String,
-    required: true,
-  },
   displayName: {
     type: String,
     required: true,

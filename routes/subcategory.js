@@ -22,29 +22,21 @@ router.post('/categories/:categoryId/subcategories', [
         });
     })
     .withMessage(`The category doesn't existed, please select a existed category before adding a new sub-category`),
-  body('slug')
-    .trim()
-    .isString()
-    .isLength({
-      min: 3,
-      max: 20,
-    })
-    .withMessage('The length of the slug must be longer than 3 but less than 21 characters')
-    .custom((slug) => {
-      return Subcategory.findOne({ slug })
-        .then(foundedSubcategory => {
-          if (foundedSubcategory) {
-            return Promise.reject('This slug have been already used, please choose another slug for this new sub-category');
-          }
-        })
-    }),
   body('displayName')
     .trim()
     .isLength({
       min: 5,
       max: 20,
     })
-    .withMessage('The length of the displayName must be equal or longer than 5 but less than 21 characters'),
+    .withMessage('The length of the displayName must be equal or longer than 5 but less than 21 characters')
+    .custom(displayName => {
+      return Subcategory.findOne({ displayName })
+        .then(foundedSubcategory => {
+          if (foundedSubcategory) {
+            return Promise.reject('This name have been already used, please choose another name for this new sub-category');
+          }
+        })
+    }),
   body('description')
     .trim()
     .isLength({

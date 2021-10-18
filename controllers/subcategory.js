@@ -13,10 +13,9 @@ exports.addSubcategory = async (req, res, next) => {
     return next(error);
   }
 
-  const { slug, displayName, description } = req.body;
+  const { displayName, description } = req.body;
   const { categoryId } = req.params;
   const subcategory = new Subcategory({
-    slug,
     displayName,
     description,
     category: categoryId,
@@ -25,9 +24,8 @@ exports.addSubcategory = async (req, res, next) => {
   try {
     const newSubcategory = await subcategory.save();
     const category = await Category.findById(categoryId);
-    console.log(`CLOG "newSubcategory": `, newSubcategory);
     category.subcategories.push(newSubcategory._id);
-    category.save();
+    await category.save();
     res
       .status(201)
       .json({

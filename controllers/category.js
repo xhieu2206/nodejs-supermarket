@@ -10,9 +10,8 @@ exports.addCategory = (req, res, next) => {
     return next(error);
   }
 
-  const { slug, displayName, description } = req.body;
+  const { displayName, description } = req.body;
   const category = new Category({
-    slug,
     displayName,
     description,
   });
@@ -65,4 +64,35 @@ exports.getCategories = (req, res, next) => {
       }
       next(err);
     });
+}
+
+exports.updateCategory = async (req, res, next) => {
+  const validationErrors = validationResult(req);
+  if (!validationErrors.isEmpty()) {
+    const error = new Error('Validation failed');
+    error.statusCode = 422;
+    error.data = validationErrors.array()[0].msg
+    return next(error);
+  }
+
+  const { categoryId } = req.params;
+  const { displayName, description } = req.body;
+
+  try {
+    const category = await Category.findById(categoryId);
+    category.displayName = displayName;
+    category.description = description;
+    const updatedCategory = await category.save();
+    res
+      .status(200)
+      .json({
+        message: 'Category updated successfully',
+        category: updatedCategory,
+      })
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 }
